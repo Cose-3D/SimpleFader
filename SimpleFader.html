@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuratore SimpleFader</title>
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #f5f5f5;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    label[for="fader-number"] {
+        margin-bottom: 5px;
+    }
+
+    .container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 18px;
+  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.6); /* Ombra più grande e intensa */
+  border: 2px solid rgb(0, 0, 171);
+}
+
+.midi-container {
+    display: none; /* Nascondi il contenitore di default */
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 18px;
+  overflow: visible; /* Permette la crescita naturale */
+}
+
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+  color: white; /* Colore del testo */
+/*  text-shadow: 
+     -1px -1px 0 grey,  Ombra in alto a sinistra */
+    /* 1px -1px 0 grey,   Ombra in alto a destra */
+    /* -1px 1px 0 grey,   Ombra in basso a sinistra */
+    /* 1px 1px 0 grey;    Ombra in basso a destra */
+}
+
+
+    h3 {
+      font-size: 20px;
+      color: #ffa726;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #6200ea;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    button:hover {
+      background-color: #3700b3;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Alone più evidente */
+    }
+    .button2 {
+    cursor: pointer;
+    padding: 15px; /* Aumenta lo spazio interno */
+    border: 2px solid #777;
+    border-radius: 50%;
+    font-size: 16px; /* Aumenta la dimensione del testo */
+    width: 2px; /* Imposta una larghezza maggiore */
+    height: 2px; /* Imposta un'altezza maggiore */
+    margin-top: 8px;
+}
+
+.button2:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 0.8); /* Alone più evidente */
+}
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin: 2px;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 50%; /* Trasforma in cerchio */
+            position: relative;
+            border: 2px solid #777;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .color-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #222;
+            border: 2px solid #555;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10; /* Per evitare sovrapposizioni */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .color-option {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            border-radius: 50%; /* Trasforma in cerchio */
+            border: 1px solid #000;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Alone di default */
+        }
+        .color-option:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Alone più evidente */
+        }
+
+        .color-box:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 0.8); /* Alone più evidente */
+        }
+
+        .color-menu.active {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Spazio tra i pulsanti nel menu colori */
+        }
+
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .fader-label {
+            font-weight: bold;
+        }
+        #fader-number {
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            gap: 20px; /* Spazio tra gli elementi della stessa riga */
+            align-items: center;
+            position: relative; /* Per il posizionamento del menu colori */
+            margin-bottom: 40px; /* Spazio aggiuntivo tra le righe */
+        }
+
+        .row2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px; /* Ridotto lo spazio tra i pulsanti */
+    align-items: center;
+    margin-bottom: 15px; /* Meno spazio tra le righe */
+}
+
+.dropdown-button {
+    background-color: #333; /* Colore uniforme senza gradiente */
+    color: white;
+    padding: 12px 24px;
+    border: 2px solid #04007a; /* Bordo originale */
+    border-radius: 10px; /* Angoli arrotondati */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
+}
+
+.dropdown-button:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5); /* Ombra più intensa */
+}
+
+.dropdown-menu {
+    background-color: white; /* Sfondo del menu bianco */
+    border: 1px solid #ccc; /* Bordo sottile per definizione */
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Leggera ombra per profondità */
+}
+
+
+
+    .coloreBordo {
+    width: 100%;
+    background-color: #333; /* Colore uniforme senza gradiente */
+    color: white;
+    padding: 10px;
+    margin-top: 8px;
+    border: 2px solid #00537a; /* Bordo originale */
+    border-radius: 10px; /* Angoli arrotondati */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    select {
+    width: 100%;
+    background-color: #333; /* Colore uniforme senza gradiente */
+    color: white;
+    padding: 10px;
+    margin-top: 8px;
+    border: 2px solid #6200ea; /* Bordo originale */
+    border-radius: 10px; /* Angoli arrotondati */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
+    }
+
+    #status {
+      margin: 20px 0;
+      font-size: 14px;
+      color: #ffa726;
+    }
+
+    h4 {
+        font-size: 14px;
+  font-style: italic;
+  color: #bbb;
+  margin-top: 15px;
+  text-align: center;
+    }
+
+    /* Stile moderno per il pulsante toggle con tonalità più scura */
+.toggle-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #626262; /* Tonalità più scura */
+  transition: 0.3s;
+  border-radius: 13px;
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: rgb(231, 231, 231);
+  border-radius: 50%;
+}
+
+/* Effetto hover quando il toggle è inattivo */
+.toggle-switch:hover .toggle-slider {
+  background-color: #787878; /* Tonalità leggermente più chiara */
+}
+
+/* Stato attivo */
+input:checked + .toggle-slider {
+  background-color: #006b15; /* Ancora più scuro quando attivo */
+}
+
+/* Effetto hover quando il toggle è attivo */
+.toggle-switch:hover input:checked + .toggle-slider {
+  background-color: #00851b; /* Leggermente più chiaro */
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+        .midi-list {
+            list-style: none;
+            padding: 0;
+            max-height: none; /* Evita qualsiasi limite in altezza */
+            overflow: visible; /* Permette la crescita naturale */
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .midi-list li {
+            background: #252525;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            border-left: 5px solid #6200ea;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        #midi-messages {
+    white-space: pre;
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: medium;
+    /* color: #33FF33; */
+}
+
+.inverti {
+    display: none;
+}
+
+    </style>
+    </head>
+    <body>
+    <div class="container">
+    <h1>Configuratore SimpleFader</h1>
+    <button id="connect">Connetti</button>
+    <div id="status"></div>
+
+    <div class ='inverti'>
+    <button id="invertLed">💡 Inverti Comportamento LED</button>
+    <h4>Mantieni il LED spento o acceso</h4>
+    </div>
+
+
+    <h3 style="text-align: left;">Comportamento Pulsante</h3>
+
+  <select class="dropdown-button" id="buttonBehavior">
+    <option value="1" selected>Seleziona una Opzione</option>
+    <option value="switch">Cambia Numero di Fader</option>
+    <option value="keyboard">Pulsante Tastiera</option>
+    <option value="controlChange">Control Change</option>
+  </select>
+  
+  <div id="additionalOptions"></div>
+
+  <div class="midi-container">
+    <h4>Log Messaggi in Ingresso</h4>
+    <ul id="midi-messages" class="midi-list"></ul>
+  </div>
+
+</div>
+
+  <script>
+
+    let midiAccess = null;
+    let selectedOutput = null;
+
+    const colors = ['white', 'red', 'orange', 'yellow', 'lime', 'cyan', 'blue', 'magenta', 'pink', 'lightskyblue', 'sandybrown', 'lightgreen', 'hotpink'];
+//    color = colors[0]; // Define a default color
+
+
+
+const languages = [
+          { code: "US", name: "English (US)" },
+          { code: "IT", name: "Italiano (IT)" },
+          { code: "HU", name: "Magyar (HU)" },
+          { code: "ES", name: "Español (ES)" },
+          { code: "FR", name: "Français (FR)" },
+          { code: "PT", name: "Português (PT)" },
+          { code: "SE", name: "Svenska (SE)" },
+          { code: "DK", name: "Dansk (DK)" },
+          { code: "DE", name: "Deutsch (DE)" }
+
+          ];
+
+document.addEventListener("DOMContentLoaded", () => {
+      const buttonBehavior = document.getElementById("buttonBehavior");
+      const additionalOptions = document.getElementById("additionalOptions");
+
+      function updateAdditionalOptions() {
+        additionalOptions.innerHTML = ""; // Clear previous options
+
+        if (buttonBehavior.value === "keyboard") {
+          // Etichetta per il tasto della tastiera
+          const keyLabel = document.createElement("label");
+          keyLabel.setAttribute("for", "keyboardKeys");
+          keyLabel.textContent = "Tasto della tastiera da emulare: ";
+          additionalOptions.appendChild(keyLabel);
+
+          // Selettore del tasto della tastiera
+          const keySelect = document.createElement("select");
+          keySelect.className = "coloreBordo";
+          keySelect.id = "keyboardKeys";
+          additionalOptions.appendChild(keySelect);
+
+          // Etichetta per la lingua della tastiera
+          const langLabel = document.createElement("label");
+          langLabel.setAttribute("for", "keyboardLanguage");
+          langLabel.textContent = "Seleziona la lingua della tastiera: ";
+          additionalOptions.appendChild(langLabel);
+
+          // Selettore della lingua della tastiera
+          const langSelect = document.createElement("select");
+          langSelect.className = "coloreBordo";
+          langSelect.id = "keyboardLanguage";
+          
+
+//          const language = document.getElementById("keyboardLanguage").value;
+
+          languages.forEach(lang => {
+            const option = document.createElement("option");
+            option.value = lang.code;
+            option.textContent = lang.name;
+            langSelect.appendChild(option);
+          });
+          additionalOptions.appendChild(langSelect);
+
+          // Aggiorna la lista dei tasti in base alla lingua
+          langSelect.addEventListener("change", () => {
+            updateKeyboardKeys(langSelect.value, keySelect);
+          });
+
+          // Carica la lista dei tasti iniziali per la lingua predefinita
+          updateKeyboardKeys(langSelect.value || "US", keySelect);
+
+          addKeyboardKeysListener();
+
+          funzione();
+
+        } else if (buttonBehavior.value === "controlChange") {
+        const channelLabel = document.createElement("label");
+        channelLabel.setAttribute("for", "controlChangeChannel");
+        channelLabel.textContent = "Canale MIDI: ";
+        additionalOptions.appendChild(channelLabel);
+
+        const channelSelect = document.createElement("select");
+        channelSelect.className = "coloreBordo";
+        channelSelect.id = "controlChangeChannel";
+        const defaultChannelOption = document.createElement("option");
+        defaultChannelOption.value = "1";
+        defaultChannelOption.textContent = "1 (Default)";
+        defaultChannelOption.disabled = true;
+        defaultChannelOption.selected = true;
+        channelSelect.appendChild(defaultChannelOption);
+        for (let i = 1; i <= 16; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = `${i}`;
+          channelSelect.appendChild(option);
+        }
+        additionalOptions.appendChild(channelSelect);
+
+        const label = document.createElement("label");
+        label.setAttribute("for", "controlChangeValue");
+        label.textContent = "Valore MIDI Control Change: ";
+        additionalOptions.appendChild(label);
+
+        const select = document.createElement("select");
+        select.className = "coloreBordo";
+        select.id = "controlChangeValue";
+        const defaultValueOption = document.createElement("option");
+        defaultValueOption.value = "2";
+        defaultValueOption.textContent = "2 (Default)";
+        defaultValueOption.disabled = true;
+        defaultValueOption.selected = true;
+        select.appendChild(defaultValueOption);
+        for (let i = 0; i <= 127; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = `${i}`;
+          select.appendChild(option);
+        }
+        additionalOptions.appendChild(select);
+
+        // Aggiungi i listener per entrambi i menu a tendina
+        channelSelect.addEventListener("change", pulsanteCCListener);
+        select.addEventListener("change", pulsanteCCListener);
+        pulsanteCCListener();
+
+        // **Pulsante Toggle**
+      const toggleWrapper = document.createElement("div");
+      toggleWrapper.className = "toggle-wrapper";
+
+      const toggleLabel = document.createElement("label");
+      toggleLabel.className = "toggle-switch";
+
+      const toggleInput = document.createElement("input");
+      toggleInput.type = "checkbox";
+      toggleInput.id = "midiToggle";
+
+      const toggleSpan = document.createElement("span");
+      toggleSpan.className = "toggle-slider";
+
+      toggleLabel.appendChild(toggleInput);
+      toggleLabel.appendChild(toggleSpan);
+      toggleWrapper.appendChild(toggleLabel);
+
+      // **Messaggio informativo sotto il toggle**
+      const toggleInfo = document.createElement("h4");
+      toggleInfo.className = "toggle-info";
+      toggleInfo.textContent =
+        "Attiva su ON se vuoi inviare tramite il pulsante di SimpleFader valori alternati 127-0 anziché sempre 127";
+
+      toggleWrapper.appendChild(toggleInfo);
+      additionalOptions.appendChild(toggleWrapper);
+
+      // Event listener per il toggle
+      toggleInput.addEventListener("change", () => {
+        if (toggleInput.checked) {
+          sendMidiAlternateCC(0x91, 0x1E, 0x1E);
+        } else {
+          sendMidiAlternateCC(0x90, 0x1E, 0x1E);
+        }
+      });
+
+      buttonBehavior.addEventListener("change", updateAdditionalOptions);
+
+        funzione();
+          }
+        else if (buttonBehavior.value === "switch") {
+            const faderLabel = document.createElement("label");
+            faderLabel.setAttribute("for", "fader-number");
+            faderLabel.textContent = "Numero Fader: ";
+            additionalOptions.appendChild(faderLabel);
+
+            const faderSelect = document.createElement("select");
+            faderSelect.id = "fader-number";
+            faderSelect.innerHTML = `
+                <option value="" disabled selected>Seleziona Numero di Fader</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            `;
+            additionalOptions.appendChild(faderSelect);
+
+            const menusContainer = document.createElement("div");
+            menusContainer.id = "menus";
+            menusContainer.className = "menu-container";
+            additionalOptions.appendChild(menusContainer);
+
+            faderSelect.addEventListener("change", () => updateMenus(faderSelect.value));
+
+            const saveButton = document.createElement("button");
+            saveButton.textContent = "Salva Valori";
+            saveButton.style.backgroundColor = "#ffa726";
+            saveButton.style.color = "#121212";
+            saveButton.style.margin = "20px 0 0 0";
+            saveButton.addEventListener("mouseover", () => {
+                saveButton.style.backgroundColor = "#ff9800";
+            });
+            saveButton.addEventListener("mouseout", () => {
+                saveButton.style.backgroundColor = "#ffa726";
+            });
+            saveButton.addEventListener("click", () => {
+                if (!selectedOutput) {
+                    alert("Nessun dispositivo MIDI connesso!");
+                    return;
+                }
+                const message = [0x90, 20, 20];
+                selectedOutput.send(message);
+                console.log(`Inviato: ${message.join(", ")}`);
+            });
+            additionalOptions.appendChild(saveButton);
+
+            const subtitle = document.createElement("h4");
+            subtitle.textContent = "Salva la configurazione corrente nel dispositivo in modo che permanga al riavvio";
+            additionalOptions.appendChild(subtitle);
+        }
+
+      }
+
+    function funzione() {
+    additionalOptions.appendChild(document.createElement("hr")).style.cssText = "margin: 20px 0; border: 1px solid #6200ea;";
+
+    const led = document.createElement("h3");
+    led.style.textAlign = "left";
+    led.textContent = "Colore LED";
+    additionalOptions.appendChild(led);
+
+    // Contenitore per i pulsanti dei colori
+    let row = document.createElement('div');
+    row.className = "row2";
+
+    colors.forEach((color, index) => {
+        let colorButton = document.createElement('button');
+        colorButton.className = "button2";
+        colorButton.id = `colorButton${index + 1}`;
+        colorButton.textContent = "";
+        colorButton.style.margin = "0 5px";
+        colorButton.style.backgroundColor = color;
+        
+        colorButton.onclick = () => {
+            sendColor(color);
+            colorButton.style.backgroundColor = color; // Aggiorna il colore del pulsante selezionato
+        };
+
+        row.appendChild(colorButton);
+    });
+
+    additionalOptions.appendChild(row); // Aggiunge la riga con i pulsanti colore
+
+    additionalOptions.appendChild(document.createElement("hr")).style.cssText = "margin: 20px 0; border: 1px solid #6200ea;";
+
+    const h3 = document.createElement("h3");
+    h3.style.textAlign = "left";
+    h3.textContent = "Comportamento Fader";
+    additionalOptions.appendChild(h3);
+
+    const startValueLabel = document.createElement("label");
+    startValueLabel.setAttribute("for", "startValue");
+    startValueLabel.textContent = "Canale MIDI ";
+    additionalOptions.appendChild(startValueLabel);
+
+    const startValueSelect = document.createElement("select");
+    startValueSelect.id = "startValue";
+    additionalOptions.appendChild(startValueSelect);
+
+    const defaultStartOption = document.createElement("option");
+    defaultStartOption.value = "1";
+    defaultStartOption.textContent = "1 (Default)";
+    defaultStartOption.disabled = true;
+    defaultStartOption.selected = true;
+    startValueSelect.appendChild(defaultStartOption);
+
+    for (let i = 1; i <= 16; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        startValueSelect.appendChild(option);
+    }
+
+    const endValueLabel = document.createElement("label");
+    endValueLabel.textContent = "Valore MIDI Control Change:";
+    additionalOptions.appendChild(endValueLabel);
+
+    const endValueSelect = document.createElement("select");
+    endValueSelect.id = "endValue";
+    additionalOptions.appendChild(endValueSelect);
+
+    const defaultEndOption = document.createElement("option");
+    defaultEndOption.value = "11";
+    defaultEndOption.textContent = "11 (Default)";
+    defaultEndOption.disabled = true;
+    defaultEndOption.selected = true;
+    endValueSelect.appendChild(defaultEndOption);
+
+    for (let i = 0; i <= 127; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        endValueSelect.appendChild(option);
+    }
+
+    startValueSelect.addEventListener("change", sendMIDIFader);
+    endValueSelect.addEventListener("change", sendMIDIFader);
+    sendMIDIFader();
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Salva Valori";
+    saveButton.style.backgroundColor = "#ffa726";
+    saveButton.style.color = "#121212";
+    saveButton.style.margin = "30px 0 0 0";
+    saveButton.style.transition = "background-color 0.3s";
+    saveButton.addEventListener("mouseover", () => {
+        saveButton.style.backgroundColor = "#ff9800";
+    });
+    saveButton.addEventListener("mouseout", () => {
+        saveButton.style.backgroundColor = "#ffa726";
+    });
+    saveButton.addEventListener("click", () => {
+        if (!selectedOutput) {
+            alert("Nessun dispositivo MIDI connesso!");
+            return;
+        }
+        const message = [0x90, 20, 20];
+        selectedOutput.send(message);
+        console.log(`Inviato: ${message.join(", ")}`);
+    });
+    additionalOptions.appendChild(saveButton);
+
+    const subtitle = document.createElement("h4");
+    subtitle.textContent = "Salva la configurazione corrente nel dispositivo in modo che permanga al riavvio";
+    additionalOptions.appendChild(subtitle);
+}
+
+
+      // Assume this is set elsewhere in your code
+
+    function sendMIDIFaderNumberMessage(faderNumber) {
+        if (!selectedOutput) {
+            alert("Nessun dispositivo MIDI connesso!");
+            return;
+        }
+
+        const message = [0xC0, parseInt(faderNumber, 10)];
+        selectedOutput.send(message);
+        console.log(`Inviato: ${message.join(", ")}`);
+    }
+
+    function sendMIDIMessage(faderIndex) {
+        if (!selectedOutput) {
+            alert("Nessun dispositivo MIDI connesso!");
+            return;
+        }
+
+        const channelSelect = document.querySelector(`.fader-section:nth-child(${faderIndex}) select:nth-child(1)`);
+        const valueSelect = document.querySelector(`.fader-section:nth-child(${faderIndex}) select:nth-child(2)`);
+        const colorButton = document.getElementById(`colorButton${faderIndex}`);
+
+        if (!channelSelect || !valueSelect || !colorButton) {
+            alert("Seleziona un canale MIDI, un valore MIDI Control Change e un colore.");
+            return;
+        }
+
+        const midiChannel = parseInt(channelSelect.value, 10) - 1;
+        const midiValue = parseInt(valueSelect.value, 10);
+        const color = colors.indexOf(colorButton.style.backgroundColor);
+
+        const message = [0xA0 | midiChannel, midiValue, (color << 3) | (faderIndex - 1)];
+        selectedOutput.send(message);
+        console.log(`Inviato: ${message.join(", ")}`);
+    }
+
+    function toggleColorMenu(menuId) {
+        let menu = document.getElementById(menuId);
+        const isActive = menu.classList.contains('active');
+        closeAllColorMenus();
+        if (!isActive) menu.classList.add('active');
+    }
+
+    function closeAllColorMenus() {
+        let menus = document.querySelectorAll('.color-menu');
+        menus.forEach(menu => menu.classList.remove('active'));
+    }
+
+    function selectColor(faderIndex, color) {
+        console.log(`Hai selezionato il colore: ${color} per il Fader ${faderIndex}`);
+        let colorButton = document.getElementById(`colorButton${faderIndex}`);
+        colorButton.style.backgroundColor = color;
+        closeAllColorMenus();
+        sendMIDIMessage(faderIndex);
+    
+    }
+
+    let faderValues = {};
+
+    async function updateMenus() {
+  const faderNumber = parseInt(document.getElementById('fader-number').value, 10);
+  const menusContainer = document.getElementById('menus');
+  menusContainer.innerHTML = ""; // Pulisce il contenitore
+
+  // Invia il messaggio MIDI con il numero di fader (se connesso)
+  sendMIDIFaderNumberMessage(faderNumber);
+
+  // Crea i menu per ogni fader (valori ammessi da 2 a 8)
+  for (let i = 1; i <= faderNumber; i++) {
+    // Se il fader non è stato ancora configurato, inizializza i valori predefiniti
+    if (!faderValues[i]) {
+      faderValues[i] = {
+        channel: 1,                   // Canale predefinito 1
+        value: i,                     // Valore incrementale: 1, 2, 3, ...
+        color: colors[(i - 1) % colors.length]  // Colore predefinito
+      };
+    }
+
+    const faderSection = document.createElement('div');
+    faderSection.className = "fader-section";
+
+    const faderLabel = document.createElement('div');
+    faderLabel.className = "fader-label";
+    faderLabel.textContent = `Fader ${i}`;
+
+    const row = document.createElement('div');
+    row.className = "row";
+
+    // Menu per selezionare il canale
+    const channelSelect = document.createElement('select');
+    channelSelect.innerHTML = `<option value="" disabled>Canale</option>`;
+    for (let j = 1; j <= 16; j++) {
+      channelSelect.innerHTML += `<option value="${j}">${j}</option>`;
+    }
+    channelSelect.value = faderValues[i].channel;
+    channelSelect.onchange = () => {
+      console.log(`Fader ${i}: Canale cambiato in ${channelSelect.value}`);
+      faderValues[i].channel = parseInt(channelSelect.value, 10);
+      sendMIDIMessage(i);
+    };
+
+    // Menu per selezionare il valore fader
+    const faderSelect = document.createElement('select');
+    faderSelect.innerHTML = `<option value="0" disabled>Valore Fader</option>`;
+    for (let k = 0; k <= 127; k++) {
+      faderSelect.innerHTML += `<option value="${k}" ${k === faderValues[i].value ? 'selected' : ''}>${k}</option>`;
+    }
+    faderSelect.onchange = () => {
+      console.log(`Fader ${i}: Valore cambiato in ${faderSelect.value}`);
+      faderValues[i].value = parseInt(faderSelect.value, 10);
+      sendMIDIMessage(i);
+    };
+
+    // Menu Colore LED
+    let colorMenu = document.createElement('div');
+    colorMenu.className = "color-menu";
+    colorMenu.id = `colorMenu${i}`;
+
+    // Aggiunta dei colori con la selezione per il colore predefinito
+    colors.forEach((color, index) => {
+      let colorBox = document.createElement('div');
+      colorBox.className = "color-box";
+      colorBox.style.backgroundColor = color;
+      colorBox.onclick = () => {
+        selectColor(i, index); // Salva l'indice del colore selezionato
+        colorButton.style.backgroundColor = color;  // Aggiorna subito il colore del bottone
+      };
+      colorMenu.appendChild(colorBox);
+    });
+
+    let colorButton = document.createElement('button');
+    colorButton.className = "button2";
+    colorButton.id = `colorButton${i}`;
+    colorButton.textContent = "";
+    colorButton.style.backgroundColor = faderValues[i].color;  // Usa il colore salvato
+    colorButton.onclick = (e) => {
+      e.stopPropagation();
+      toggleColorMenu(`colorMenu${i}`);
+    };
+
+    row.appendChild(channelSelect);
+    row.appendChild(faderSelect);
+    row.appendChild(colorButton);
+    row.appendChild(colorMenu);
+
+    faderSection.appendChild(faderLabel);
+    faderSection.appendChild(row);
+    menusContainer.appendChild(faderSection);
+  }
+
+  document.addEventListener('click', closeAllColorMenus);
+
+  // Invia il messaggio MIDI con ritardo
+  for (let i = 1; i <= faderNumber; i++) {
+    await sendMIDIMessageWithDelay(i);  // Usa la funzione con delay
+  }
+}
+
+// Funzione per inviare il messaggio MIDI con un delay
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Funzione che invia il messaggio MIDI per un fader con ritardo
+async function sendMIDIMessageWithDelay(faderIndex) {
+  await delay(100);  // Ritardo di 100 ms
+  sendMIDIMessage(faderIndex);  // Invia il messaggio MIDI
+}
+
+// Funzione per gestire la selezione del colore
+function selectColor(faderIndex, colorIndex) {
+  faderValues[faderIndex].color = colors[colorIndex]; // Memorizza l'indice del colore selezionato
+  console.log(`Fader ${faderIndex} colore cambiato a ${colors[colorIndex]}`);
+  sendMIDIMessage(faderIndex);  // Invia il messaggio MIDI
+}
+
+// Funzione per inviare il messaggio MIDI
+function sendMIDIMessage(faderIndex) {
+  if (!selectedOutput) {
+    alert("Nessun dispositivo MIDI connesso!");
+    return;
+  }
+
+  const channelSelect = document.querySelector(`.fader-section:nth-child(${faderIndex}) select:nth-child(1)`);
+  const valueSelect = document.querySelector(`.fader-section:nth-child(${faderIndex}) select:nth-child(2)`);
+  const colorButton = document.getElementById(`colorButton${faderIndex}`);
+
+  if (!channelSelect || !valueSelect || !colorButton) {
+    alert("Seleziona un canale MIDI, un valore MIDI Control Change e un colore.");
+    return;
+  }
+
+  const midiChannel = parseInt(channelSelect.value, 10) - 1;
+  const midiValue = parseInt(valueSelect.value, 10);
+  const colorIndex = colors.indexOf(faderValues[faderIndex].color); // Usa l'indice del colore direttamente
+
+  const message = [0xA0 | midiChannel, midiValue, (colorIndex << 3) | (faderIndex - 1)];
+  selectedOutput.send(message);
+  console.log(`Inviato: ${message.join(", ")}`);
+}
+
+
+
+
+
+function updateKeyboardKeys(language, keySelect) {
+    const keys = getKeysByLanguage(language);
+    keySelect.innerHTML = ""; // Pulisce le opzioni esistenti
+
+    // Creazione dell'opzione predefinita
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Seleziona un tasto";
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+
+    // Aggiunta dell'opzione predefinita prima delle altre opzioni
+    keySelect.appendChild(defaultOption);
+
+    // Aggiunta delle opzioni basate sulle chiavi della lingua selezionata
+    keys.forEach(key => {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = key;
+        keySelect.appendChild(option);
+    });
+}
+
+      function getKeysByLanguage(language) {
+        if (language === "US") {
+          return [
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+            "0 [NumPad]", "1 [NumPad]", "2 [NumPad]", "3 [NumPad]", "4 [NumPad]", "5 [NumPad]", "6 [NumPad]", "7 [NumPad]", "8 [NumPad]", "9 [NumPad]", "/ [NumPad]", "* [NumPad]", "- [NumPad]", "+ [NumPad]", "Enter [NumPad]", ". [NumPad]",
+            "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+            "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+            "Escape", "Tab", "CapsLock", "Shift", "Control", "Alt", "Space", "Enter", "Backspace", "Delete", "Insert", "Home", "End", "PageUp", "PageDown",
+            "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"
+          ];
+        } else if (language === "IT") {
+          return [
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+            "è", "ì", "ò", "à", "ù",
+            "0 [Tastierino Numerico]", "1 [Tastierino Numerico]", "2 [Tastierino Numerico]", "3 [Tastierino Numerico]", "4 [Tastierino Numerico]", "5 [Tastierino Numerico]", "6 [Tastierino Numerico]", "7 [Tastierino Numerico]", "8 [Tastierino Numerico]", "9 [Tastierino Numerico]", "/ [Tastierino Numerico]", "* [Tastierino Numerico]", "- [Tastierino Numerico]", "+ [Tastierino Numerico]", "Invio [Tastierino Numerico]", ". [Tastierino Numerico]",
+            "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+            "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+            "Esci", "Tab", "BloccoMaiuscole", "Shift", "Control", "Alt", "Spazio", "Invio", "Backspace", "Canc", "Inserisci", "Home", "Fine", "PaginaSu", "PaginaGiù",
+            "FrecciaSu", "FrecciaGiù", "FrecciaSinistra", "FrecciaDestra"
+          ];
+        } else if (language === "HU") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "ó", "ö", "ő", "ú", "ü", "ű", "á", "é", "í",
+    "0 [Numerikus billentyűzet]", "1 [Numerikus billentyűzet]", "2 [Numerikus billentyűzet]", "3 [Numerikus billentyűzet]", "4 [Numerikus billentyűzet]", "5 [Numerikus billentyűzet]", "6 [Numerikus billentyűzet]", "7 [Numerikus billentyűzet]", "8 [Numerikus billentyűzet]", "9 [Numerikus billentyűzet]", "/ [Numerikus billentyűzet]", "* [Numerikus billentyűzet]", "- [Numerikus billentyűzet]", "+ [Numerikus billentyűzet]", "Enter [Numerikus billentyűzet]", ". [Numerikus billentyűzet]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Kilépés", "Tab", "CapsLock", "Shift", "Ctrl", "Alt", "Szóköz", "Enter", "Backspace", "Törlés", "Insert", "Home", "End", "PageUp", "PageDown",
+    "Felfelé nyíl", "Le nyíl", "Balra nyíl", "Jobbra nyíl"
+  ];
+} else if (language === "ES") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "º", "¡", "`", "ñ", "á", "ç",
+    "0 [Teclado numérico]", "1 [Teclado numérico]", "2 [Teclado numérico]", "3 [Teclado numérico]", "4 [Teclado numérico]", "5 [Teclado numérico]", "6 [Teclado numérico]", "7 [Teclado numérico]", "8 [Teclado numérico]", "9 [Teclado numérico]", "/ [Teclado numérico]", "* [Teclado numérico]", "- [Teclado numérico]", "+ [Teclado numérico]", "Intro [Teclado numérico]", ". [Teclado numérico]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Salir", "Tab", "BloqMayús", "Shift", "Control", "Alt", "Espacio", "Enter", "Retroceso", "Supr", "Insert", "Inicio", "Fin", "Re Pág", "Av Pág",
+    "FlechaArriba", "FlechaAbajo", "FlechaIzquierda", "FlechaDerecha"
+  ];
+      }else if (language === "FR") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "²", "é", "è", "ç", "à", "^", "ù",
+    "0 [Clavier numérique]", "1 [Clavier numérique]", "2 [Clavier numérique]", "3 [Clavier numérique]", "4 [Clavier numérique]", "5 [Clavier numérique]", "6 [Clavier numérique]", "7 [Clavier numérique]", "8 [Clavier numérique]", "9 [Clavier numérique]", "/ [Clavier numérique]", "* [Clavier numérique]", "- [Clavier numérique]", "+ [Clavier numérique]", "Entrée [Clavier numérique]", ". [Clavier numérique]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Échap", "Tab", "VerrMaj", "Maj", "Ctrl", "Alt", "Espace", "Entrée", "Retour arrière", "Suppr", "Inser", "Accueil", "Fin", "PagePréc", "PageSuiv",
+    "FlècheHaut", "FlècheBas", "FlècheGauche", "FlècheDroite"
+  ];
+} else if (language === "PT") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "«", "´", "ç", "º", "~",
+    "0 [Teclado numérico]", "1 [Teclado numérico]", "2 [Teclado numérico]", "3 [Teclado numérico]", "4 [Teclado numérico]", "5 [Teclado numérico]", "6 [Teclado numérico]", "7 [Teclado numérico]", "8 [Teclado numérico]", "9 [Teclado numérico]", "/ [Teclado numérico]", "* [Teclado numérico]", "- [Teclado numérico]", "+ [Teclado numérico]", "Enter [Teclado numérico]", ". [Teclado numérico]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Sair", "Tab", "CapsLock", "Shift", "Control", "Alt", "Espaço", "Enter", "Backspace", "Delete", "Inserir", "Início", "Fim", "PageUp", "PageDown",
+    "SetaCima", "SetaBaixo", "SetaEsquerda", "SetaDireita"
+  ];
+} else if (language === "SE") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "å", "ä", "ö", "ü", "á",
+    "0 [NumPad]", "1 [NumPad]", "2 [NumPad]", "3 [NumPad]", "4 [NumPad]", "5 [NumPad]", "6 [NumPad]", "7 [NumPad]", "8 [NumPad]", "9 [NumPad]", "/ [NumPad]", "* [NumPad]", "- [NumPad]", "+ [NumPad]", "Enter [NumPad]", ". [NumPad]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Escape", "Tab", "CapsLock", "Shift", "Control", "Alt", "Space", "Enter", "Backspace", "Delete", "Insert", "Home", "End", "PageUp", "PageDown",
+    "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"
+  ];
+}else if (language === "DE") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "â", "ß", "é", "ü", "ö", "ä",
+    "0 [Ziffernblock]", "1 [Ziffernblock]", "2 [Ziffernblock]", "3 [Ziffernblock]", "4 [Ziffernblock]", "5 [Ziffernblock]", "6 [Ziffernblock]", "7 [Ziffernblock]", "8 [Ziffernblock]", "9 [Ziffernblock]", "/ [Ziffernblock]", "* [Ziffernblock]", "- [Ziffernblock]", "+ [Ziffernblock]", "Eingabe [Ziffernblock]", ". [Ziffernblock]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Esc", "Tab", "CapsLock", "Shift", "Ctrl", "Alt", "Leertaste", "Enter", "Backspace", "Entf", "Einfg", "Pos1", "Ende", "BildAuf", "BildAb",
+    "PfeilOben", "PfeilUnten", "PfeilLinks", "PfeilRechts"
+  ];
+} else if (language === "DK") {
+  return [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+    "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
+//    "å", "ø", "æ", "¨", "´",
+    "0 [NumPad]", "1 [NumPad]", "2 [NumPad]", "3 [NumPad]", "4 [NumPad]", "5 [NumPad]", "6 [NumPad]", "7 [NumPad]", "8 [NumPad]", "9 [NumPad]", "/ [NumPad]", "* [NumPad]", "- [NumPad]", "+ [NumPad]", "Enter [NumPad]", ". [NumPad]",
+    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "=", "+",
+    "[", "]", "{", "}", "\\", "|", ";", ":", "'", "\"", ",", ".", "/", "<", ">", "?",
+    "Esc", "Tab", "CapsLock", "Shift", "Ctrl", "Alt", "Mellemrum", "Enter", "Backspace", "Delete", "Indsæt", "Home", "End", "PageUp", "PageDown",
+    "PiletastOp", "PiletastNed", "PiletastVenstre", "PiletastHøjre"
+  ];
+}}
+
+
+      buttonBehavior.addEventListener("change", updateAdditionalOptions);
+    });
+
+    let midiInputs = new Map(); // Mappa per tenere traccia degli input MIDI attivi
+
+
+    document.getElementById("connect").addEventListener("click", async () => {
+    if (!navigator.requestMIDIAccess) {
+        alert("Il tuo browser non supporta Web MIDI!");
+        return;
+    }
+
+    try {
+        if (selectedOutput) {
+            // Disconnessione: rimuove i listener dagli input MIDI
+            for (let { input, listener } of midiInputs.values()) {
+                input.removeEventListener("midimessage", listener);
+            }
+            midiInputs.clear();
+
+            selectedOutput = null;
+            document.getElementById("status").textContent = "";
+            document.getElementById("connect").textContent = "Connetti Dispositivo MIDI";
+
+            // Nasconde gli elementi UI
+            document.querySelector(".midi-container").style.display = "none";
+            document.querySelector(".inverti").style.display = "none";
+            document.getElementById("buttonBehavior").value = "1"; 
+            document.getElementById("additionalOptions").innerHTML = "";
+
+            console.log("Dispositivo disconnesso e listener MIDI rimossi.");
+            return;
+        }
+
+        // Richiede accesso MIDI
+        midiAccess = await navigator.requestMIDIAccess({ sysex: false });
+
+        // Trova dispositivi MIDI in uscita
+        const outputs = Array.from(midiAccess.outputs.values());
+        const simpleFaderDevice = outputs.find(output => output.name.includes("SimpleFader"));
+
+        if (simpleFaderDevice) {
+            selectedOutput = simpleFaderDevice;
+            document.getElementById("status").textContent = `Connesso a: ${selectedOutput.name}`;
+            document.getElementById("connect").textContent = "Disconnetti Dispositivo MIDI";
+
+            // Mostra gli elementi UI
+            document.querySelector(".midi-container").style.display = "block";
+            document.querySelector(".inverti").style.display = "block";
+
+            console.log(`Dispositivo connesso: ${selectedOutput.name}`);
+        } else {
+            alert("Nessun dispositivo SimpleFader trovato.");
+            return;
+        }
+
+        // Avvia l'ascolto MIDI senza duplicare i listener
+        listenToMIDI();
+
+    } catch (error) {
+      console.error("Errore nell'accesso MIDI:", error);
+      alert("Impossibile connettersi al dispositivo MIDI: " + error.message);
+    }
+});
+
+
+
+
+
+    function sendMIDIMessage() {
+  if (!selectedOutput) {
+    alert("Nessun dispositivo MIDI connesso!");
+    return;
+  }
+
+  const selectedChannel = document.querySelector(".dropdown-content div.selected");
+  const selectedValue = document.querySelector(".dropdown-content2 div.selected");
+
+  if (!selectedChannel || !selectedValue) {
+    alert("Seleziona un canale MIDI e un valore MIDI Control Change.");
+    return;
+  }
+
+  const midiChannel = parseInt(selectedChannel.dataset.value, 10) - 1; // Canale MIDI (0-15)
+  const midiValue = parseInt(selectedValue.dataset.value, 10); // Valore MIDI (0-127)
+
+  const message = [0xB0 | midiChannel, midiValue, 127]; // Messaggio MIDI Control Change
+  selectedOutput.send(message); // Invia il messaggio al dispositivo
+  console.log(`Inviato: ${message.join(", ")}`);
+}
+
+function setupDropdown(dropdownButtonSelector, dropdownContentSelector, onSelectionCallback) {
+  const dropdownButton = document.querySelector(dropdownButtonSelector);
+  const dropdownContent = document.querySelector(dropdownContentSelector);
+  const options = dropdownContent.querySelectorAll("div");
+
+  if (!dropdownButton || !dropdownContent) {
+    console.error(`Dropdown "${dropdownButtonSelector}" o "${dropdownContentSelector}" non trovato!`);
+    return;
+  }
+
+  // Mostra/nasconde il menu al click sul bottone
+  dropdownButton.addEventListener("click", () => {
+    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
+  });
+
+  // Listener per la selezione delle opzioni
+  options.forEach(option => {
+    option.addEventListener("click", function () {
+      // Aggiorna lo stato selezionato
+      dropdownContent.querySelectorAll(".selected").forEach(opt => opt.classList.remove("selected"));
+      this.classList.add("selected");
+
+      // Chiudi il menu
+      dropdownContent.style.display = "none";
+
+      // Richiama la callback
+      onSelectionCallback();
+    });
+  });
+
+  // Chiudi il menu se clicchi fuori
+  document.addEventListener("click", (event) => {
+    if (!dropdownButton.contains(event.target) && !dropdownContent.contains(event.target)) {
+      dropdownContent.style.display = "none";
+    }
+  });
+}
+
+// Imposta valori predefiniti
+document.querySelector(".dropdown-content div[data-value='1']")?.classList.add("selected");
+document.querySelector(".dropdown-content2 div[data-value='0']")?.classList.add("selected");
+
+
+
+    const specialKeysHex = {
+  "Escape": "0xB1", "Esci": "0xB1", "Esc": "0xB1", "Echap": "0xB1", "Escap": "0xB1",
+  "Tab": "0xB3", "Tabulazione": "0xB3", "Mellemrum": "0xB3", 
+  "CapsLock": "0xC1", "BloccoMaiuscole": "0xC1", "Feststelltaste": "0xC1", "BloqMayús": "0xC1", "VerrouillageMaj": "0xC1", 
+  "Shift": "0xE1", "Maiusc": "0xE1", "Umschalt": "0xE1", "Mayús": "0xE1", "Maj": "0xE1", 
+  "Control": "0xE0", "Ctrl": "0xE0", "Strg": "0xE0", 
+  "Alt": "0xE2", "AltGr": "0xE6", 
+  "Space": "0x20", "Spazio": "0x20", "Leertaste": "0x20", "Espacio": "0x20", "Espace": "0x20", 
+  "Enter": "0xB0", "Invio": "0xB0", "Eingabetaste": "0xB0", "Intro": "0xB0", "Entrée": "0xB0", 
+  "Backspace": "0xB2", "Rückschritt": "0xB2", "Retroceso": "0xB2", "RetourArrière": "0xB2", 
+  "Delete": "0xD4", "Canc": "0xD4", "Entf": "0xD4", "Supr": "0xD4", "Suppr": "0xD4", 
+  "Insert": "0xD1", "Inserisci": "0xD1", "Einfg": "0xD1", "Ins": "0xD1", "Inserer": "0xD1", 
+  "Home": "0xD2", "Inizio": "0xD2", "Pos1": "0xD2", "Début": "0xD2", 
+  "End": "0xD5", "Fine": "0xD5", "Ende": "0xD5", "Fin": "0xD5", 
+  "PageUp": "0xD3", "PaginaSu": "0xD3", "BildAuf": "0xD3", "PageHaut": "0xD3", 
+  "PageDown": "0xD6", "PaginaGiù": "0xD6", "BildAb": "0xD6", "PageBas": "0xD6", 
+  "ArrowUp": "0xDA", "FrecciaSu": "0xDA", "FlechaArriba": "0xDA", "PfeilOben": "0xDA", "FlècheHaut": "0xDA", "SetaCima": "0xDA", 
+  "ArrowDown": "0xD9", "FrecciaGiù": "0xD9", "FlechaAbajo": "0xD9", "PfeilUnten": "0xD9", "FlècheBas": "0xD9", "SetaBaixo": "0xD9", 
+  "ArrowLeft": "0xD8", "FrecciaSinistra": "0xD8", "FlechaIzquierda": "0xD8", "PfeilLinks": "0xD8", "FlècheGauche": "0xD8", "SetaEsquerda": "0xD8", 
+  "ArrowRight": "0xD7", "FrecciaDestra": "0xD7", "FlechaDerecha": "0xD7", "PfeilRechts": "0xD7", "FlècheDroite": "0xD7", "SetaDireita": "0xD7",
+  "Mellemrum": "0x20", "Leertaste": "0x20", "Espaço": "0x20", "Espace": "0x20", "SetaCima": "0xDA", "SetaBaixo": "0xD9", "SetaEsquerda": "0xD8", "SetaDireita": "0xD7",
+  "PiletastOp": "0xDA", "PiletastNed": "0xD9", "PiletastVenstre": "0xD8", "PiletastHøjre": "0xD7",
+  "Kilépés": "0xB1", "Tabulátor": "0xB3", "Nagybetűzár": "0xC1", "Szóköz": "0x20", "Törlés": "0xD4", "Beillesztés": "0xD1", "Kezdőlap": "0xD2", "Vége": "0xD5", "OldalFel": "0xD3", "OldalLe": "0xD6", "Felfelé nyíl": "0xDA", "Le nyíl": "0xD9", "Balra nyíl": "0xD8", "Jobbra nyíl": "0xD7",
+
+
+  "è": "0xB7", "ì": "0xB6", "ò": "0xBB", "à": "0xBC", "ù": "0xB9",
+/*  "å": "0xC5", "ä": "0xC8", "ö": "0xC9", "ü": "0xCA", "á": "0xCB",
+  "«": "0xBE", "´": "0xBF", "ç": "0xC1", "º": "0xC2", "~": "0xC3",
+  "ó": "0xB7", "ö": "0xB6", "ő": "0xB8", "ú": "0xB9", "ü": "0xBA", "ű": "0xBB", "á": "0xBC", "é": "0xBD", "í": "0xBE",
+  "²": "0xA3", "é": "0x8F", "è": "0x94", "ç": "0x96", "à": "0x97", "^": "0xAF", "ù": "0xB4",
+  "º": "0xB9", "¡": "0xB6", "`": "0xB7", "ñ": "0xBC", "á": "0xBD", "ç": "0xBA",
+  "å": "0xB7", "ø": "0xBC", "æ": "0xBB", "¨": "0xB9", "´": "0xB6",
+  "â": "0xB8", "ß": "0xB2", "é": "0xB6", "ü": "0xB7", "ö": "0xBB", "ä": "0xBC"*/
+};
+
+
+
+const asciiKeys = {
+  "F1": "0xC2", "F2": "0xC3", "F3": "0xC4", "F4": "0xC5", "F5": "0xC6", "F6": "0xC7", "F7": "0xC8", "F8": "0xC9", "F9": "0xCA", "F10": "0xCB", "F11": "0xCC", "F12": "0xCD", "F13": "0xF0", "F14": "0xF1", "F15": "0xF2", "F16": "0xF3", "F17": "0xF4", "F18": "0xF5", "F19": "0xF6", "F20": "0xF7", "F21": "0xF8", "F22": "0xF9", "F23": "0xFA", "F24": "0xFB",
+  "0 [NumPad]": "0xEA", "1 [NumPad]": "0xE1", "2 [NumPad]": "0xE2", "3 [NumPad]": "0xE3", "4 [NumPad]": "0xE4", "5 [NumPad]": "0xE5", "6 [NumPad]": "0xE6", "7 [NumPad]": "0xE7", "8 [NumPad]": "0xE8", "9 [NumPad]": "0xE9", "Enter [NumPad]": "0xE0",
+  "0 [Tastierino Numerico]": "0xEA", "1 [Tastierino Numerico]": "0xE1", "2 [Tastierino Numerico]": "0xE2", "3 [Tastierino Numerico]": "0xE3", "4 [Tastierino Numerico]": "0xE4", "5 [Tastierino Numerico]": "0xE5", "6 [Tastierino Numerico]": "0xE6", "7 [Tastierino Numerico]": "0xE7", "8 [Tastierino Numerico]": "0xE8", "9 [Tastierino Numerico]": "0xE9", ". [Tastierino Numerico]": "0xEB", "/ [Tastierino Numerico]": "0xDC", "* [Tastierino Numerico]": "0xDD", "- [Tastierino Numerico]": "0xDE", "+ [Tastierino Numerico]": "0xDF", "Invio [Tastierino Numerico]": "0xE0",
+  "0 [Ziffernblock]": "0xEA", "1 [Ziffernblock]": "0xE1", "2 [Ziffernblock]": "0xE2", "3 [Ziffernblock]": "0xE3", "4 [Ziffernblock]": "0xE4", "5 [Ziffernblock]": "0xE5", "6 [Ziffernblock]": "0xE6", "7 [Ziffernblock]": "0xE7", "8 [Ziffernblock]": "0xE8", "9 [Ziffernblock]": "0xE9", "/ [Ziffernblock]": "0xDC", "* [Ziffernblock]": "0xDD", "- [Ziffernblock]": "0xDE", "+ [Ziffernblock]": "0xDF", "Eingabe [Ziffernblock]": "0xE0",
+  "0 [Teclado numérico]": "0xEA", "1 [Teclado numérico]": "0xE1", "2 [Teclado numérico]": "0xE2", "3 [Teclado numérico]": "0xE3", "4 [Teclado numérico]": "0xE4", "5 [Teclado numérico]": "0xE5", "6 [Teclado numérico]": "0xE6", "7 [Teclado numérico]": "0xE7", "8 [Teclado numérico]": "0xE8", "9 [Teclado numérico]": "0xE9", "/ [Teclado numérico]": "0xDC", "* [Teclado numérico]": "0xDD", "- [Teclado numérico]": "0xDE", "+ [Teclado numérico]": "0xDF", "Enter [Teclado numérico]": "0xE0", ". [Teclado numérico]": "0xEB"
+};
+
+
+
+function addKeyboardKeysListener() {
+  document.getElementById("keyboardKeys").addEventListener("change", () => {
+    if (!selectedOutput) {
+      alert("Nessun dispositivo MIDI connesso!");
+      return;
+    }
+
+    const language = document.getElementById("keyboardLanguage").value;
+    let languageValue;
+
+  // Controllo del valore di "language" e mappatura al byte del messaggio
+  if (language === "US") {
+    languageValue = 0x00; // English (US)
+  } else if (language === "IT") {
+    languageValue = 0x01; // Italiano (IT)
+  } else if (language === "HU") {
+    languageValue = 0x02; // Magyar (HU)
+  } else if (language === "ES") {
+    languageValue = 0x03; // Español (ES)
+  } else if (language === "FR") {
+    languageValue = 0x04; // Français (FR)
+  } else if (language === "PT") {
+    languageValue = 0x05; // Português (PT)
+  } else if (language === "SE") {
+    languageValue = 0x06; // Svenska (SE)
+  } else if (language === "DK") {
+    languageValue = 0x07; // Dansk (DK)
+  } else if (language === "DE") {
+    languageValue = 0x08; // Deutsch (DE)
+  } else {
+    console.error("Lingua non supportata");
+    return null;
+  }
+
+
+    const key = document.getElementById('keyboardKeys').value;
+    const hexValue = specialKeysHex[key] || asciiKeys[key] || key; // Se è un tasto speciale, prendi il valore esadecimale, altrimenti usa il tasto normale
+    console.log(`Tasto selezionato: ${key}, Valore: ${hexValue}`);
+
+//    const value = parseInt(hexValue, 16);
+
+    let value;
+
+    if (key in specialKeysHex || key in asciiKeys) {
+    value = parseInt(hexValue, 16); // Se hexValue è presente in specialKeysHex o asciiKeys, usa parseInt
+//    console.log("in special keys");
+    } else {
+    value = hexValue.charCodeAt(0); // Altrimenti, prendi il valore del carattere
+//    console.log("NON in special keys");
+    }
+
+    // Calcoliamo MSB e LSB
+    const msb = (value >> 7) & 0x7F;  // Ottieni i 7 bit più significativi
+    const lsb = value & 0x7F;         // Ottieni i 7 bit meno significativi
+
+//    const message = [0xE0, hexValue.charCodeAt(0), 0]; // Messaggio MIDI SysEx 0xF0 - 0xF7
+//    const message = [0xE0, msb, lsb]; // Messaggio MIDI SysEx 0xF0 - 0xF7
+    const message = [(0xE0 + languageValue), lsb, msb];
+    selectedOutput.send(message); // Invia il messaggio al dispositivo
+    console.log(`Inviato: ${message.map(byte => byte.toString(16).padStart(2, '0')).join(" ")}`);
+  });
+}
+
+
+/*function pulsanteCCListener() {
+  document.getElementById("controlChangeValue").addEventListener("change", () => {
+    if (!selectedOutput) {
+      alert("Nessun dispositivo MIDI connesso!");
+      return;
+    }
+
+    const controlChangeValue = parseInt(document.getElementById("controlChangeValue").value, 10); // Valore MIDI (0-127)
+
+    const message = [0xC0, controlChangeValue, 127]; // Messaggio MIDI Note Off con velocity 127
+    selectedOutput.send(message); // Invia il messaggio al dispositivo
+    console.log(`Inviato: ${message.join(", ")}`);
+  });
+}*/
+
+
+function pulsanteCCListener() {
+  const valueSelect = document.getElementById("controlChangeValue");
+  const channelSelect = document.getElementById("controlChangeChannel");
+
+    if (!selectedOutput) {
+      alert("Nessun dispositivo MIDI connesso!");
+      return;
+    }
+
+    const controlChangeValue = parseInt(valueSelect.value, 10); // Valore MIDI (0-127)
+    const midiChannelValue = parseInt(channelSelect.value, 10); // Canale MIDI (1-16)
+
+    if (isNaN(controlChangeValue) || isNaN(midiChannelValue)) {
+      console.log("Seleziona sia il canale che il valore MIDI.");
+      return;
+    }
+
+    const message = [0x90 | (midiChannelValue - 1), controlChangeValue, 10]; // Costruzione del messaggio MIDI
+    selectedOutput.send(message); // Invia il messaggio al dispositivo MIDI
+    console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+}
+
+
+function alternaValoreListener() {
+  const startValueSelect = document.getElementById("startValue");
+  const endValueSelect = document.getElementById("endValue");
+
+  const sendCombinedMidi = () => {
+    const startValue = parseInt(startValueSelect.value, 10);
+    const endValue = parseInt(endValueSelect.value, 10);
+
+    if (!selectedOutput) {
+      alert("Nessun dispositivo MIDI connesso!");
+      return;
+    }
+
+    const message = [0x90 + (startValue - 1), endValue, 0];
+    selectedOutput.send(message);
+    console.log(`Inviato messaggio MIDI: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+  };
+
+  startValueSelect.addEventListener("change", sendCombinedMidi);
+  endValueSelect.addEventListener("change", sendCombinedMidi);
+}
+
+
+function valoreFinaleListener() {
+  const ccFaderSelect = document.getElementById("ccFaderValue");
+
+  ccFaderSelect.addEventListener("change", () => {
+    if (!selectedOutput) {
+      alert("Nessun dispositivo MIDI connesso!");
+      return;
+    }
+
+    const ccFaderValue = parseInt(ccFaderSelect.value, 10);
+
+    // Costruisci il messaggio MIDI
+    const message = [0xC0, ccFaderValue];
+    selectedOutput.send(message); // Invia il messaggio MIDI
+    console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+  });
+}
+
+document.getElementById("invertLed").addEventListener("click", function() {
+  if (!selectedOutput) {
+    alert("Nessun dispositivo MIDI connesso!");
+    return;
+  }
+
+  const message = [0x90, 0x00, 0x7F]; // Note On message with velocity 127
+  selectedOutput.send(message);
+  console.log(`Comportamento LED invertito: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+});
+
+function sendMIDIFader() {
+    if (!selectedOutput) {
+        alert("Nessun dispositivo MIDI connesso!");
+        return;
+    }
+
+    const selectedChannel = document.getElementById("startValue").value;
+    const selectedValue = document.getElementById("endValue").value;
+
+    const midiChannel = parseInt(selectedChannel, 10) - 1; // Canale MIDI (0-15)
+    const midiValue = parseInt(selectedValue, 10); // Valore MIDI (0-127)
+
+    const message = [0xB0 | midiChannel, midiValue, 127]; // Messaggio MIDI Control Change
+    selectedOutput.send(message); // Invia il messaggio al dispositivo
+    console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+}
+
+function sendColor(color) {
+    if (!selectedOutput) {
+        alert("Nessun dispositivo MIDI connesso!");
+        return;
+    }
+
+//    let colorBox = document.querySelector(`.color-box[style*="background-color: ${color}"]`);
+//    const colore = colorBox.dataset.colorIndex = colors.indexOf(color);
+
+    // Trova l'indice del colore nell'array colors
+    const coloreIndex = colors.indexOf(color);
+    if (coloreIndex === -1) {
+        console.error("Errore: colore non trovato nell'array.");
+        return;
+    }
+
+    const message = [0x90, coloreIndex, 30]; // Messaggio MIDI Control Change
+    selectedOutput.send(message); // Invia il messaggio al dispositivo
+    console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+}
+
+
+  function sendMidiAlternateCC(byte1, byte2, byte3) {
+    if (!selectedOutput) {
+        alert("Nessun dispositivo MIDI connesso!");
+        return;
+    }
+
+    const message = [byte1, byte2, byte3];
+    selectedOutput.send(message); // Invia il messaggio al dispositivo
+    console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
+}
+
+
+function listenToMIDI() {
+    if (midiAccess) {
+        for (let input of midiAccess.inputs.values()) {
+            if (!midiInputs.has(input.id)) {
+                // Se l'input non ha ancora un listener, aggiungilo
+                const listener = (message) => {
+                    handleMIDIMessage(message);
+                };
+                
+                input.addEventListener("midimessage", listener);
+                midiInputs.set(input.id, { input, listener });
+
+                console.log(`Listener aggiunto a: ${input.name}`);
+            }
+        }
+    }
+}
+
+
+    function handleMIDIMessage(message) {
+    const [status, data1, data2] = message.data;
+    
+    // Estrai il canale MIDI (4 bit meno significativi del primo byte)
+    const midiChannel = (status & 0x0F) + 1; // I canali MIDI vanno da 1 a 16
+
+    // Palette di colori molto distinti per i canali MIDI
+    const baseColors = [
+        "#FF0000", "#FF7F00", "#FFD700", "#7FFF00", 
+        "#00FF00", "#00FA9A", "#00FFFF", "#1E90FF", 
+        "#0000FF", "#8A2BE2", "#9400D3", "#C71585", 
+        "#DC143C", "#8B0000", "#228B22", "#4682B4"
+    ];
+
+    // Funzione per generare una variazione casuale del colore base in base al CC
+    function getBorderColor(channel, cc) {
+        const baseColor = baseColors[(channel - 1) % baseColors.length]; // Colore fisso per ogni canale
+
+        // Genera un numero pseudo-casuale basato su canale + CC per garantire variazioni
+        const randomFactor = seededRandom(channel * 100 + cc) * 360;
+
+        // Converti il colore base in HSL e modifica la tonalità con la variazione casuale
+        let hsl = rgbToHsl(hexToRgb(baseColor));
+        hsl[0] = (hsl[0] + randomFactor) % 360; // Cambia solo la tonalità (hue)
+
+        return `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`; // Ritorna il nuovo colore
+    }
+
+    // Funzione per generare numeri pseudo-casuali (basata su seed)
+    function seededRandom(seed) {
+        let x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // Converte un colore HEX in RGB
+    function hexToRgb(hex) {
+        let r = parseInt(hex.substring(1, 3), 16);
+        let g = parseInt(hex.substring(3, 5), 16);
+        let b = parseInt(hex.substring(5, 7), 16);
+        return [r, g, b];
+    }
+
+    // Converte un colore RGB in HSL
+    function rgbToHsl([r, g, b]) {
+        r /= 255, g /= 255, b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max == min) {
+            h = s = 0; // Grayscale
+        } else {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h *= 60;
+        }
+        return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
+    }
+
+    // Creazione del messaggio di testo
+    const messageText = `Canale: ${midiChannel}      CC: ${data1}      Velocity: ${data2}`;
+
+    // Creazione e aggiornamento della lista dei messaggi MIDI
+    const listItem = document.createElement("li");
+    listItem.textContent = messageText;
+
+    // Imposta il colore del bordo sinistro combinando Canale MIDI e CC con casualità
+    listItem.style.borderLeft = `5px solid ${getBorderColor(midiChannel, data1)}`;
+
+    const messageList = document.getElementById("midi-messages");
+    messageList.appendChild(listItem);
+
+    if (messageList.children.length > 10) {
+        messageList.removeChild(messageList.firstChild);
+    }
+}
+
+
+  </script>
+</body>
+</html>
