@@ -1021,8 +1021,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Se il fader non è stato ancora configurato, inizializza i valori predefiniti
         if (!faderValues[i]) {
           faderValues[i] = {
-            channel: 1,                   // Canale predefinito 1
-            value: i,                     // Valore incrementale: 1, 2, 3, ...
+            channel: i,                   // Canale predefinito 1
+            value: 7,                     // Valore incrementale: 1, 2, 3, ...
             color: colors[(i - 1) % colors.length]  // Colore predefinito
           };
         }
@@ -1448,6 +1448,10 @@ document.getElementById("connect").addEventListener("click", async () => {
       document.querySelector(".inverti").style.display = "block";
       
       console.log(`Dispositivo connesso: ${selectedOutput.name}`);
+      
+      // Invia al dispositivo il messaggio MIDI [0x90, 0, 55]
+      selectedOutput.send([0x90, 0, 55]);
+      
       listenToMIDI(); // Funzione che opera esclusivamente su selectedOutput
     } else {
       // Se ci sono più dispositivi, mostra il prompt modale per la selezione
@@ -1460,6 +1464,10 @@ document.getElementById("connect").addEventListener("click", async () => {
         document.querySelector(".inverti").style.display = "block";
         
         console.log(`Dispositivo connesso: ${selectedOutput.name}`);
+        
+        // Invia al dispositivo il messaggio MIDI [0x90, 0, 55]
+        selectedOutput.send([0x90, 0, 55]);
+        
         listenToMIDI();
       } else {
         alert("Nessun dispositivo selezionato.");
@@ -1470,6 +1478,7 @@ document.getElementById("connect").addEventListener("click", async () => {
     alert("Impossibile connettersi al dispositivo MIDI: " + error.message);
   }
 });
+
 
 
 
@@ -1846,6 +1855,8 @@ function listenToMIDI() {
 }
 
 
+let firmwareVersion = null;
+
 function handleMIDIMessage(message) {
   const [status, data1, data2] = message.data;
   
@@ -1903,9 +1914,33 @@ function handleMIDIMessage(message) {
     return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
   }
 
-  // Verifica se il messaggio è Program Change (status nibble 0xC0)
   let messageText;
-  if ((status & 0xF0) === 0xC0) {
+
+  // Caso specifico per la versione firmware:
+  // Se riceviamo un messaggio con byte1 = 0x90 e byte3 = 55, allora il byte2 rappresenta la versione firmware
+  if (status === 0x80 && data2 === 55) {
+    let decimalValue = data1; // il byte2
+    // Esempio: 00010000 -> 10 (decimale) con prima unità 0, quindi versione 1.0
+    firmwareVersion = (Math.floor(decimalValue / 10) + (decimalValue % 10) / 10).toFixed(1);
+    messageText = `Versione Firmware: ${firmwareVersion}`;
+
+     // Aggiornamento dello status di connessione.
+  if (typeof selectedOutput !== 'undefined' && selectedOutput && selectedOutput.name) {
+    const statusEl = document.getElementById("status");
+    // Se firmwareVersion non è stata ancora definita, visualizziamo "N/A"
+    let fwVersionText = firmwareVersion !== null ? firmwareVersion : "N/A";
+    let statusHTML = `Connesso a: ${selectedOutput.name} <br><br> <span style="color: #33FF33;">Versione Firmware: ${fwVersionText}</span>`;
+    
+    // Se la versione firmware è definita ed è minore di 0.9, aggiungiamo il messaggio per l'aggiornamento firmware
+    if (firmwareVersion !== null && parseFloat(firmwareVersion) < 0.9) {
+      statusHTML += `<br><br><a href="https://aggiornamento.it" target="_blank" style="color: #FFEF00;">Aggiornamento Firmware Disponibile</a>`;
+    } else {
+      statusHTML += `<br><br>Dispositivo aggiornato ✅`;
+    }
+    statusEl.innerHTML = statusHTML;
+  }
+
+  } else if ((status & 0xF0) === 0xC0) {
     // Program Change: non consideriamo il byte velocity (data2)
     messageText = `Canale: ${midiChannel}   PC: ${data1}`;
   } else {
@@ -1913,21 +1948,21 @@ function handleMIDIMessage(message) {
     messageText = `Canale: ${midiChannel}   CC: ${data1}   Velocity: ${data2}`;
   }
 
-  // Creazione del messaggio di testo
+  // Creazione del messaggio di testo per la lista
   const listItem = document.createElement("li");
   listItem.textContent = messageText;
-
-  // Imposta il colore del bordo sinistro combinando il Canale MIDI e il valore (data1)
   listItem.style.borderLeft = `5px solid ${getBorderColor(midiChannel, data1)}`;
 
   const messageList = document.getElementById("midi-messages");
-  messageList.appendChild(listItem);
+  messageList.insertBefore(listItem, messageList.firstChild);
 
   // Limita la lista a 10 messaggi
   if (messageList.children.length > 10) {
-    messageList.removeChild(messageList.firstChild);
+     messageList.removeChild(messageList.lastChild); // Rimuove l'elemento più vecchio in fondo
   }
+//  console.log(`Status: ${status}, Data1: ${data1}, Data2: ${data2}`);
 }
+
 
 
   </script>
