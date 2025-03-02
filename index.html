@@ -4,398 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configuratore SimpleFader</title>
-  <style>
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #121212;
-  color: #f5f5f5;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
-
-label[for="fader-number"] {
-  margin-bottom: 5px;
-}
-
-label {
-  display: block;
-  padding-top: 15px;
-  box-sizing: border-box;
-    }
-
-.container {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #1e1e1e;
-  border-radius: 18px;
-  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.6); /* Ombra più grande e intensa */
-  border: 2px solid rgb(0, 0, 171);
-}
-
-.midi-container {
-  display: none; /* Nascondi il contenitore di default */
-  max-width: 600px;
-  margin: 30px auto;
-  padding: 5px;
-  border-radius: 18px;
-  overflow: visible; /* Permette la crescita naturale */
-}
-
-h1 {
-  font-size: 32px;
-  margin-bottom: 30px;
-  letter-spacing: 2px;
-  color: white;
-  /* text-shadow: -1px -1px 0 grey, 1px -1px 0 grey, -1px 1px 0 grey, 1px 1px 0 grey; */
-}
-
-h3 {
-  font-size: 20px;
-  color: #ffa726;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #6200ea;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-button:hover {
-  background-color: #3700b3;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Alone più evidente */
-}
-
-.button2 {
-  cursor: pointer;
-  padding: 15px; /* Aumenta lo spazio interno */
-  border: 2px solid #777;
-  border-radius: 50%;
-  font-size: 16px; /* Aumenta la dimensione del testo */
-  width: 2px; /* Imposta una larghezza maggiore */
-  height: 2px; /* Imposta un'altezza maggiore */
-}
-
-.button2:hover {
-  box-shadow: 0 0 15px rgba(255, 255, 0.8); /* Alone più evidente */
-}
-
-.color-box {
-  width: 20px;
-  height: 20px;
-  margin: 2px;
-  display: inline-block;
-  cursor: pointer;
-  border-radius: 50%; /* Trasforma in cerchio */
-  position: relative;
-  border: 2px solid #777;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-.color-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #222;
-  border: 2px solid #555;
-  padding: 10px;
-  border-radius: 5px;
-  z-index: 10; /* Per evitare sovrapposizioni */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-.color-option {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  border-radius: 50%; /* Trasforma in cerchio */
-  border: 1px solid #000;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Alone di default */
-}
-
-.color-option:hover {
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Alone più evidente */
-}
-
-.color-box:hover {
-  box-shadow: 0 0 15px rgba(255, 255, 0.8); /* Alone più evidente */
-}
-
-.color-menu.active {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* Spazio tra i pulsanti nel menu colori */
-}
-
-.menu-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.fader-label {
-  font-weight: bold;
-}
-
-#fader-number {
-  display: block;
-  margin: 0 auto;
-  margin-bottom: 20px;
-}
-
-.row {
-  display: flex;
-  gap: 20px; /* Spazio tra gli elementi della stessa riga */
-  align-items: center;
-  position: relative; /* Per il posizionamento del menu colori */
-  margin-bottom: 40px; /* Spazio aggiuntivo tra le righe */
-}
-
-.row2 {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px; /* Ridotto lo spazio tra i pulsanti */
-  align-items: center;
-  margin-bottom: 15px; /* Meno spazio tra le righe */
-}
-
-.dropdown-button {
-  background-color: #333; /* Colore uniforme senza gradiente */
-  color: white;
-  padding: 12px 24px;
-  border: 2px solid #04007a; /* Bordo originale */
-  border-radius: 10px; /* Angoli arrotondati */
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
-}
-
-.dropdown-button:hover {
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5); /* Ombra più intensa */
-}
-
-.dropdown-menu {
-  background-color: white; /* Sfondo del menu bianco */
-  border: 1px solid #ccc; /* Bordo sottile per definizione */
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Leggera ombra per profondità */
-}
-
-/* Definizioni duplicate di .coloreBordo e select (mantenute una volta sola) */
-.coloreBordo {
-  width: calc(100% - 20px);
-  background-color: #333; /* Colore uniforme senza gradiente */
-  color: white;
-  padding: 10px;
-  margin-top: 8px;
-  border: 2px solid #00537a; /* Bordo originale */
-  border-radius: 10px; /* Angoli arrotondati */
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
-}
-
-select {
-  width: calc(100% - 20px);
-  background-color: #333; /* Colore uniforme senza gradiente */
-  color: white;
-  padding: 10px;
-  margin-top: 8px;
-  border: 2px solid #6200ea; /* Bordo originale */
-  border-radius: 10px; /* Angoli arrotondati */
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
-
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-
-#status {
-  margin: 20px 0;
-  font-size: 14px;
-  color: #ffa726;
-}
-
-h4 {
-  font-size: 14px;
-  font-style: italic;
-  color: #bbb;
-  margin-top: 15px;
-  text-align: center;
-}
-
-/* --- Regole per il Toggle Switch (già presenti nel tema, mantenute) --- */
-.toggle-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #626262;
-  transition: 0.3s;
-  border-radius: 13px;
-}
-
-.toggle-slider::before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
-  background-color: rgb(231, 231, 231);
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.toggle-switch:hover .toggle-slider {
-  background-color: #787878;
-}
-
-input:checked + .toggle-slider {
-  background-color: #006b15;
-}
-
-.toggle-switch:hover input:checked + .toggle-slider {
-  background-color: #00851b;
-}
-
-input:checked + .toggle-slider::before {
-  transform: translateX(24px);
-}
-
-/* --- Aggiunte per i controlli MIDI dinamici --- */
-
-/* Contenitore per i controlli MIDI (usato con appendChild) */
-#controlContainer {
-  margin-top: 20px;
-}
-
-/* Container dei pulsanti: allineati a sinistra */
-#buttonContainer {
-  margin: 20px 0;
-  display: flex;
-  justify-content: flex-start; /* Allinea a sinistra */
-  gap: 10px;
-}
-
-/* Pulsanti interni al container dei controlli (estensione delle regole esistenti) */
-#buttonContainer button.active {
-  background-color: #006b15;
-  box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
-}
-
-.midi-list {
-            list-style: none;
-            padding: 0;
-            max-height: none; /* Evita qualsiasi limite in altezza */
-            overflow: visible; /* Permette la crescita naturale */
-            overflow-y: auto;
-            text-align: left;
-        }
-
-        .midi-list li {
-            background: #252525;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 10px;
-            border-left: 5px solid #6200ea;
-            font-size: 14px;
-            font-family: monospace;
-        }
-
-        #midi-messages {
-    white-space: pre;
-    text-align: center;
-    letter-spacing: 1px;
-    font-size: medium;
-    /* color: #33FF33; */
-}
-
-.inverti {
-    display: none;
-}
-
-.tab-container {
-      display: flex;
-      justify-content: left;
-      margin-top: 20px;
-    }
-    
-    .tab {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: transparent;
-      color: white;
-      border: none;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      transition: border-bottom 0.3s;
-      background-color: #383838;
-      border-radius: 15px 15px 0 0; /* Arrotonda solo gli angoli superiori */
-    }
-    
-    .tab.active {
-      background-color: #505050;
-      border-radius: 15px 15px 0 0; /* Arrotonda solo gli angoli superiori */
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-      background-color: #505050;
-      border-radius: 0 15px 15px 15px; /* Arrotonda solo gli angoli superiori */
-    }
-
-    </style>
+  <link rel="stylesheet" href="style.css">
     </head>
     <body>
+      
+      <div id="language-container" class="language-container">
+    <span id="language-label" class="language-button">🌐 Cambia lingua</span>
+    <div id="language-options" class="language-options">
+      <div data-lang="it">🇮🇹 Italiano</div>
+      <div data-lang="en">🇬🇧 English</div>
+    </div>
+  </div>
+
     <div class="container">
     <h1>Configuratore SimpleFader</h1>
     <button id="connect">Connetti</button>
@@ -418,7 +38,7 @@ input:checked + .toggle-slider::before {
     <h3 style="text-align: left;">Comportamento Pulsante</h3>
 
   <select class="dropdown-button" id="buttonBehavior">
-    <option value="1" selected>Seleziona una Opzione</option>
+    <option value="1" selected>Seleziona un'Opzione</option>
     <option value="switch">Cambia Numero di Fader</option>
     <option value="keyboard">Pulsante Tastiera</option>
     <option value="controlChange">Control Change o Program Change</option>
@@ -435,6 +55,41 @@ input:checked + .toggle-slider::before {
 </div>
 
   <script>
+
+document.addEventListener("DOMContentLoaded", function() {
+      // Rilevazione della lingua salvata o della lingua del browser
+      const userLang = localStorage.getItem("lang") || navigator.language || navigator.userLanguage;
+      const langCode = userLang.substring(0, 2);
+      if (langCode !== "it") {
+        window.location.href = "index-en.html";
+      }
+      
+      const languageLabel = document.getElementById("language-label");
+      const languageOptions = document.getElementById("language-options");
+
+      // Al click sul pulsante, il menu con le opzioni viene visualizzato subito
+      languageLabel.addEventListener("click", function(e) {
+        e.stopPropagation(); // Previene la propagazione per evitare di chiudere subito il menu
+        languageOptions.style.display = (languageOptions.style.display === "block") ? "none" : "block";
+      });
+
+      // Aggiunge il listener su ogni opzione
+      const options = languageOptions.querySelectorAll("div[data-lang]");
+      options.forEach(function(option) {
+        option.addEventListener("click", function() {
+          const selectedLang = this.getAttribute("data-lang");
+          localStorage.setItem("lang", selectedLang);
+          window.location.href = (selectedLang === "en") ? "index-en.html" : "index.html";
+        });
+      });
+
+      // Nasconde il menu se si clicca fuori dal contenitore
+      document.addEventListener("click", function(e) {
+        if (!document.getElementById("language-container").contains(e.target)) {
+          languageOptions.style.display = "none";
+        }
+      });
+    });
 
     let midiAccess = null;
     let selectedOutput = null;
@@ -1510,43 +1165,7 @@ document.getElementById("connect").addEventListener("click", async () => {
   console.log(`Inviato: ${message.join(", ")}`);
 }
 
-function setupDropdown(dropdownButtonSelector, dropdownContentSelector, onSelectionCallback) {
-  const dropdownButton = document.querySelector(dropdownButtonSelector);
-  const dropdownContent = document.querySelector(dropdownContentSelector);
-  const options = dropdownContent.querySelectorAll("div");
 
-  if (!dropdownButton || !dropdownContent) {
-    console.error(`Dropdown "${dropdownButtonSelector}" o "${dropdownContentSelector}" non trovato!`);
-    return;
-  }
-
-  // Mostra/nasconde il menu al click sul bottone
-  dropdownButton.addEventListener("click", () => {
-    dropdownContent.style.display = dropdownContent.style.display === "block" ? "none" : "block";
-  });
-
-  // Listener per la selezione delle opzioni
-  options.forEach(option => {
-    option.addEventListener("click", function () {
-      // Aggiorna lo stato selezionato
-      dropdownContent.querySelectorAll(".selected").forEach(opt => opt.classList.remove("selected"));
-      this.classList.add("selected");
-
-      // Chiudi il menu
-      dropdownContent.style.display = "none";
-
-      // Richiama la callback
-      onSelectionCallback();
-    });
-  });
-
-  // Chiudi il menu se clicchi fuori
-  document.addEventListener("click", (event) => {
-    if (!dropdownButton.contains(event.target) && !dropdownContent.contains(event.target)) {
-      dropdownContent.style.display = "none";
-    }
-  });
-}
 
 // Imposta valori predefiniti
 document.querySelector(".dropdown-content div[data-value='1']")?.classList.add("selected");
@@ -1721,47 +1340,6 @@ function pulsantePCListener() {
 }
 
 
-function alternaValoreListener() {
-  const startValueSelect = document.getElementById("startValue");
-  const endValueSelect = document.getElementById("endValue");
-
-  const sendCombinedMidi = () => {
-    const startValue = parseInt(startValueSelect.value, 10);
-    const endValue = parseInt(endValueSelect.value, 10);
-
-    if (!selectedOutput) {
-      alert("Nessun dispositivo MIDI connesso!");
-      return;
-    }
-
-    const message = [0x90 + (startValue - 1), endValue, 0];
-    selectedOutput.send(message);
-    console.log(`Inviato messaggio MIDI: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
-  };
-
-  startValueSelect.addEventListener("change", sendCombinedMidi);
-  endValueSelect.addEventListener("change", sendCombinedMidi);
-}
-
-
-function valoreFinaleListener() {
-  const ccFaderSelect = document.getElementById("ccFaderValue");
-
-  ccFaderSelect.addEventListener("change", () => {
-    if (!selectedOutput) {
-      alert("Nessun dispositivo MIDI connesso!");
-      return;
-    }
-
-    const ccFaderValue = parseInt(ccFaderSelect.value, 10);
-
-    // Costruisci il messaggio MIDI
-    const message = [0xC0, ccFaderValue];
-    selectedOutput.send(message); // Invia il messaggio MIDI
-    console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
-  });
-}
-
 document.getElementById("invertLed").addEventListener("click", function() {
   if (!selectedOutput) {
     alert("Nessun dispositivo MIDI connesso!");
@@ -1929,7 +1507,7 @@ function handleMIDIMessage(message) {
     const statusEl = document.getElementById("status");
     // Se firmwareVersion non è stata ancora definita, visualizziamo "N/A"
     let fwVersionText = firmwareVersion !== null ? firmwareVersion : "N/A";
-    let statusHTML = `Connesso a: ${selectedOutput.name} <br><br> <span style="color: #33FF33;">Versione Firmware: ${fwVersionText}</span>`;
+    let statusHTML = `Connesso a: ${selectedOutput.name} <br><br> <span style="color: #33FF33;">Versione Firmware: <span class="numeri">${fwVersionText}</span></span>`;
     
     // Se la versione firmware è definita ed è minore di 0.9, aggiungiamo il messaggio per l'aggiornamento firmware
     if (firmwareVersion !== null && parseFloat(firmwareVersion) < 0.9) {
@@ -1950,6 +1528,15 @@ function handleMIDIMessage(message) {
 
   // Creazione del messaggio di testo per la lista
   const listItem = document.createElement("li");
+
+  // Rimuove l'evidenziazione da tutti gli altri messaggi
+  document.querySelectorAll(".highlight").forEach(item => item.classList.remove("highlight"));
+
+  // Aggiunge l'evidenziazione solo all'ultimo messaggio
+  listItem.classList.add("highlight");
+
+
+
   listItem.textContent = messageText;
   listItem.style.borderLeft = `5px solid ${getBorderColor(midiChannel, data1)}`;
 
