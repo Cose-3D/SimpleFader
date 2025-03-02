@@ -1,0 +1,449 @@
+body {
+  font-family: "Twemoji", sans-serif;
+  background-color: #121212;
+  color: #f5f5f5;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.numeri {
+    font-family: "sans-serif", arial ;  /* Usa un font senza emoji per i numeri */
+  }
+
+label[for="fader-number"] {
+  margin-bottom: 5px;
+}
+
+label {
+  display: block;
+  padding-top: 15px;
+  box-sizing: border-box;
+    }
+
+.container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 18px;
+  box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.6); /* Ombra più grande e intensa */
+  border: 2px solid rgb(0, 0, 171);
+}
+
+.midi-container {
+  display: none; /* Nascondi il contenitore di default */
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 5px;
+  border-radius: 18px;
+  overflow: visible; /* Permette la crescita naturale */
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+  color: white;
+  /* text-shadow: -1px -1px 0 grey, 1px -1px 0 grey, -1px 1px 0 grey, 1px 1px 0 grey; */
+}
+
+h3 {
+  font-size: 20px;
+  color: #ffa726;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+button:hover {
+  background-color: #3700b3;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Alone più evidente */
+}
+
+.button2 {
+  cursor: pointer;
+  padding: 15px; /* Aumenta lo spazio interno */
+  border: 2px solid #777;
+  border-radius: 50%;
+  font-size: 16px; /* Aumenta la dimensione del testo */
+  width: 2px; /* Imposta una larghezza maggiore */
+  height: 2px; /* Imposta un'altezza maggiore */
+}
+
+.button2:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 0.8); /* Alone più evidente */
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 50%; /* Trasforma in cerchio */
+  position: relative;
+  border: 2px solid #777;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.color-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #222;
+  border: 2px solid #555;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 10; /* Per evitare sovrapposizioni */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.color-option {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 50%; /* Trasforma in cerchio */
+  border: 1px solid #000;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Alone di default */
+}
+
+.color-option:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Alone più evidente */
+}
+
+.color-box:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 0.8); /* Alone più evidente */
+}
+
+.color-menu.active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Spazio tra i pulsanti nel menu colori */
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fader-label {
+  font-weight: bold;
+}
+
+#fader-number {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
+.row {
+  display: flex;
+  gap: 20px; /* Spazio tra gli elementi della stessa riga */
+  align-items: center;
+  position: relative; /* Per il posizionamento del menu colori */
+  margin-bottom: 40px; /* Spazio aggiuntivo tra le righe */
+}
+
+.row2 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px; /* Ridotto lo spazio tra i pulsanti */
+  align-items: center;
+  margin-bottom: 15px; /* Meno spazio tra le righe */
+}
+
+.dropdown-button {
+  background-color: #333; /* Colore uniforme senza gradiente */
+  color: white;
+  padding: 12px 24px;
+  border: 2px solid #04007a; /* Bordo originale */
+  border-radius: 10px; /* Angoli arrotondati */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
+}
+
+.dropdown-button:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5); /* Ombra più intensa */
+}
+
+.dropdown-menu {
+  background-color: white; /* Sfondo del menu bianco */
+  border: 1px solid #ccc; /* Bordo sottile per definizione */
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Leggera ombra per profondità */
+}
+
+/* Definizioni duplicate di .coloreBordo e select (mantenute una volta sola) */
+.coloreBordo {
+  width: calc(100% - 20px);
+  background-color: #333; /* Colore uniforme senza gradiente */
+  color: white;
+  padding: 10px;
+  margin-top: 8px;
+  border: 2px solid #00537a; /* Bordo originale */
+  border-radius: 10px; /* Angoli arrotondati */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
+}
+
+select {
+  width: calc(100% - 20px);
+  background-color: #333; /* Colore uniforme senza gradiente */
+  color: white;
+  padding: 10px;
+  margin-top: 8px;
+  border: 2px solid #6200ea; /* Bordo originale */
+  border-radius: 10px; /* Angoli arrotondati */
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Effetto leggero 3D */
+
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+#status {
+  margin: 20px 0;
+  font-size: 14px;
+  color: #ffa726;
+}
+
+h4 {
+  font-size: 14px;
+  font-style: italic;
+  color: #bbb;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* --- Regole per il Toggle Switch (già presenti nel tema, mantenute) --- */
+.toggle-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #626262;
+  transition: 0.3s;
+  border-radius: 13px;
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: rgb(231, 231, 231);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggle-switch:hover .toggle-slider {
+  background-color: #787878;
+}
+
+input:checked + .toggle-slider {
+  background-color: #006b15;
+}
+
+.toggle-switch:hover input:checked + .toggle-slider {
+  background-color: #00851b;
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(24px);
+}
+
+/* --- Aggiunte per i controlli MIDI dinamici --- */
+
+/* Contenitore per i controlli MIDI (usato con appendChild) */
+#controlContainer {
+  margin-top: 20px;
+}
+
+/* Container dei pulsanti: allineati a sinistra */
+#buttonContainer {
+  margin: 20px 0;
+  display: flex;
+  justify-content: flex-start; /* Allinea a sinistra */
+  gap: 10px;
+}
+
+/* Pulsanti interni al container dei controlli (estensione delle regole esistenti) */
+#buttonContainer button.active {
+  background-color: #006b15;
+  box-shadow: 0 0 15px #00ff00cc;
+}
+
+.midi-list {
+            list-style: none;
+            padding: 0;
+            max-height: none; /* Evita qualsiasi limite in altezza */
+            overflow: visible; /* Permette la crescita naturale */
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .midi-list li {
+            background: #252525;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            border-left: 5px solid #6200ea;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        #midi-messages {
+    white-space: pre;
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: medium;
+    /* color: #33FF33; */
+}
+
+.inverti {
+    display: none;
+}
+
+.tab-container {
+      display: flex;
+      justify-content: left;
+      margin-top: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: transparent;
+      color: white;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: border-bottom 0.3s;
+      background-color: #383838;
+      border-radius: 15px 15px 0 0; /* Arrotonda solo gli angoli superiori */
+    }
+    
+    .tab.active {
+      background-color: #505050;
+      border-radius: 15px 15px 0 0; /* Arrotonda solo gli angoli superiori */
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+      background-color: #505050;
+      border-radius: 0 15px 15px 15px; /* Arrotonda solo gli angoli superiori */
+    }
+
+    .highlight {
+    border-left-width: 10px !important;
+    border-left-color: #00ff00cc !important; /* Giallo oro brillante */
+    background-color: rgba(255, 215, 0, 0.3); /* Sfondo giallo più evidente */
+    padding-left: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+  }
+
+/* Language Switcher Styles */
+.language-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 20px;
+  }
+  
+  .language-button {
+    padding: 12px 24px;
+    background-color: #333;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding-top: 35px;
+  }
+  
+.language-options {
+    position: absolute;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    white-space: nowrap; /* Impedisce al testo di andare a capo */
+}
+  .language-options div {
+    padding: 8px 16px;
+    cursor: pointer;
+    color: #f5f5f5;
+  }
+  
+.language-options div:hover {
+    background-color: #333;
+    border-radius: 5px;
+}
+
+.language-button:hover {
+    background-color: #444;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+}
