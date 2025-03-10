@@ -287,13 +287,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveButton.style.backgroundColor = "#ffa726";
             });
             saveButton.addEventListener("click", () => {
-                if (!selectedOutput) {
-                    alert("No MIDI device connected!");
-                    return;
-                }
-                const message = [0x90, 20, 20];
-                selectedOutput.send(message);
-                console.log(`Inviato: ${message.join(", ")}`);
+              if (!selectedOutput) {
+                alert("No MIDI device connected!");
+                return;
+              }
+              const message = [0x80, 0, 3];
+              selectedOutput.send(message);
+              console.log(`Sent: ${message.join(", ")}`);
+
+              alert("Configuration saved to the device. Close the browser tab to release the MIDI device and allow its detection by other programs.");
             });
             additionalOptions.appendChild(saveButton);
 
@@ -377,6 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       pulsanteCCListener();
       pulsanteToggle();
+      pulsanteToggle2();
 //      funzione();
     }
     
@@ -474,9 +477,47 @@ document.addEventListener("DOMContentLoaded", () => {
       // Event listener per il toggle
       toggleInput.addEventListener("change", () => {
         if (toggleInput.checked) {
-          sendMidiAlternateCC(0x91, 0x1E, 0x1E);
+          sendMidiAlternateCC(0x81, 0, 31);
         } else {
-          sendMidiAlternateCC(0x90, 0x1E, 0x1E);
+          sendMidiAlternateCC(0x80, 0, 31);
+        }
+      });
+    }
+
+    function pulsanteToggle2() {
+      // **Pulsante Toggle**
+      const toggleWrapper = document.createElement("div");
+      toggleWrapper.className = "toggle-wrapper my-custom-toggle";
+
+      const toggleLabel = document.createElement("label");
+      toggleLabel.className = "toggle-switch";
+
+      const toggleInput = document.createElement("input");
+      toggleInput.type = "checkbox";
+      toggleInput.id = "midiToggle2";
+
+      const toggleSpan = document.createElement("span");
+      toggleSpan.className = "toggle-slider";
+
+      toggleLabel.appendChild(toggleInput);
+      toggleLabel.appendChild(toggleSpan);
+      toggleWrapper.appendChild(toggleLabel);
+
+      // **Messaggio informativo sotto il toggle**
+      const toggleInfo = document.createElement("h4");
+      toggleInfo.className = "toggle-info";
+      toggleInfo.textContent =
+        "Enable if you want to toggle the LED state at every push";
+
+      toggleWrapper.appendChild(toggleInfo);
+      ccContent.appendChild(toggleWrapper);
+
+      // Event listener per il toggle
+      toggleInput.addEventListener("change", () => {
+        if (toggleInput.checked) {
+          sendMidiAlternateCC(0x81, 0, 11);
+        } else {
+          sendMidiAlternateCC(0x80, 0, 11);
         }
       });
     }
@@ -588,9 +629,11 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("No MIDI device connected!");
             return;
         }
-        const message = [0x90, 20, 20];
+        const message = [0x80, 0, 3]; //doppione
         selectedOutput.send(message);
         console.log(`Inviato: ${message.join(", ")}`);
+
+        alert("Configuration saved to the device. Close the browser tab to release the MIDI device and allow its detection by other programs.");
     });
     additionalOptions.appendChild(saveButton);
 
@@ -1101,7 +1144,7 @@ document.getElementById("connect").addEventListener("click", async () => {
       console.log(`Connected device: ${selectedOutput.name}`);
       
       // Invia al dispositivo il messaggio MIDI [0x90, 0, 55]
-      selectedOutput.send([0x90, 0, 55]);
+      selectedOutput.send([0x8F, 0, 1]);
       
       listenToMIDI(); // Funzione che opera esclusivamente su selectedOutput
     } else {
@@ -1117,7 +1160,7 @@ document.getElementById("connect").addEventListener("click", async () => {
         console.log(`Connected device: ${selectedOutput.name}`);
         
         // Invia al dispositivo il messaggio MIDI [0x90, 0, 55]
-        selectedOutput.send([0x90, 0, 55]);
+        selectedOutput.send([0x8F, 0, 1]);
         
         listenToMIDI();
       } else {
@@ -1131,35 +1174,6 @@ document.getElementById("connect").addEventListener("click", async () => {
 });
 
 
-
-
-
-
-
-
-
-
-    function sendMIDIMessage() {
-  if (!selectedOutput) {
-//    alert("Nessun dispositivo MIDI connesso!");
-    return;
-  }
-
-  const selectedChannel = document.querySelector(".dropdown-content div.selected");
-  const selectedValue = document.querySelector(".dropdown-content2 div.selected");
-
-  if (!selectedChannel || !selectedValue) {
-    alert("Select a MIDI channel and a MIDI Control Change value.");
-    return;
-  }
-
-  const midiChannel = parseInt(selectedChannel.dataset.value, 10) - 1; // Canale MIDI (0-15)
-  const midiValue = parseInt(selectedValue.dataset.value, 10); // Valore MIDI (0-127)
-
-  const message = [0xB0 | midiChannel, midiValue, 127]; // Messaggio MIDI Control Change
-  selectedOutput.send(message); // Invia il messaggio al dispositivo
-  console.log(`Inviato: ${message.join(", ")}`);
-}
 
 
 
@@ -1313,7 +1327,7 @@ function pulsanteCCListener() {
       return;
     }*/
 
-    const message = [0x90 | (midiChannelValue - 1), controlChangeValue, 10]; // Costruzione del messaggio MIDI
+    const message = [0x80 | (midiChannelValue - 1), controlChangeValue, 10]; // Costruzione del messaggio MIDI
     selectedOutput.send(message); // Invia il messaggio al dispositivo MIDI
     console.log(`Sent: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
 }
@@ -1330,7 +1344,7 @@ function pulsantePCListener() {
     const programChangeValue = parseInt(valueSelect.value, 10); // Valore MIDI (0-127)
     const midiChannelValue = parseInt(channelSelect.value, 10); // Canale MIDI (1-16)
 
-    const message = [0x90 | (midiChannelValue - 1), programChangeValue, 40]; // Costruzione del messaggio MIDI
+    const message = [0x80 | (midiChannelValue - 1), programChangeValue, 40]; // Costruzione del messaggio MIDI
     selectedOutput.send(message); // Invia il messaggio al dispositivo MIDI
     console.log(`Sent: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
 }
@@ -1342,7 +1356,7 @@ document.getElementById("invertLed").addEventListener("click", function() {
     return;
   }
 
-  const message = [0x90, 0x00, 0x7F]; // Note On message with velocity 127
+  const message = [0x80, 0, 110]; // Note On message with velocity 127
   selectedOutput.send(message);
   console.log(`LED Behavior Inverted: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
 });
@@ -1353,7 +1367,7 @@ document.getElementById("invertFader").addEventListener("change", function() {
     return;
   }
 
-  const message = [this.checked ? 0x91 : 0x90, 0x32, 0x32];
+  const message = [this.checked ? 0x81 : 0x80, 0x32, 0x32];
 
   selectedOutput.send(message);
   console.log(`LED Behavior Inverted: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
@@ -1371,7 +1385,7 @@ function sendMIDIFader() {
     const midiChannel = parseInt(selectedChannel, 10) - 1; // Canale MIDI (0-15)
     const midiValue = parseInt(selectedValue, 10); // Valore MIDI (0-127)
 
-    const message = [0xB0 | midiChannel, midiValue, 127]; // Messaggio MIDI Control Change
+    const message = [0x80 | midiChannel, midiValue, 2]; // Messaggio MIDI Control Change
     selectedOutput.send(message); // Invia il messaggio al dispositivo
     console.log(`SEnt: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
 }
@@ -1392,7 +1406,7 @@ function sendColor(color) {
         return;
     }
 
-    const message = [0x90, coloreIndex, 30]; // Messaggio MIDI Control Change
+    const message = [0x80, coloreIndex, 30]; // Messaggio MIDI Control Change
     selectedOutput.send(message); // Invia il messaggio al dispositivo
     console.log(`Inviato: ${message[0].toString(16).toUpperCase()}, ${message[1]}, ${message[2]}`);
 }
@@ -1413,16 +1427,17 @@ function sendColor(color) {
 function listenToMIDI() {
     if (midiAccess) {
         for (let input of midiAccess.inputs.values()) {
-            if (!midiInputs.has(input.id)) {
-                // Se l'input non ha ancora un listener, aggiungilo
+            // Controlla se l'input ha un nome e se contiene "SimpleFader" (case-insensitive)
+            if (!midiInputs.has(input.id) && input.name && input.name.toLowerCase().includes("simplefader")) {
+                // Se l'input non ha ancora un listener e il nome corrisponde, aggiungilo
                 const listener = (message) => {
                     handleMIDIMessage(message);
                 };
-                
+
                 input.addEventListener("midimessage", listener);
                 midiInputs.set(input.id, { input, listener });
 
-                console.log(`Listener added to: ${input.name}`);
+                console.log(`Listener aggiunto a: ${input.name}`);
             }
         }
     }
