@@ -270,7 +270,7 @@ h4 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #626262;
+  background-color: var(--toggle-bg, #626262);
   transition: 0.3s;
   border-radius: 13px;
 }
@@ -282,7 +282,7 @@ h4 {
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: rgb(231, 231, 231);
+  background-color: #E7E7E7;
   border-radius: 50%;
   transition: 0.3s;
 }
@@ -292,11 +292,17 @@ h4 {
 }
 
 input:checked + .toggle-slider {
-  background-color: #006b15;
+  background-color: var(--toggle-checked-bg, #006b15);
 }
 
+.my-custom-toggle {
+  --toggle-checked-bg: #879601;        /* Colore custom per lo stato checked */
+  --toggle-checked-hover-bg: #f5ff63;   /* Colore custom in hover quando è checked */
+}
+
+
 .toggle-switch:hover input:checked + .toggle-slider {
-  background-color: #00851b;
+  background-color: var(--toggle-checked-hover-bg, #00851b);
 }
 
 input:checked + .toggle-slider::before {
