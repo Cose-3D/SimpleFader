@@ -1518,7 +1518,7 @@ function handleMIDIMessage(message) {
     const statusEl = document.getElementById("status");
     // Se firmwareVersion non è stata ancora definita, visualizziamo "N/A"
     let fwVersionText = firmwareVersion !== null ? firmwareVersion : "N/A";
-    let statusHTML = `Connected to: ${selectedOutput.name} <br><br> <span style="color: #33FF33;">Versione Firmware: <span class="numeri">${fwVersionText}</span></span>`;
+    let statusHTML = `Connected to: ${selectedOutput.name} <br><br> <span style="color: #33FF33;">Firmware Version: <span class="numeri">${fwVersionText}</span></span>`;
     
     // Se la versione firmware è definita ed è minore di 0.9, aggiungiamo il messaggio per l'aggiornamento firmware
     if (firmwareVersion !== null && parseFloat(firmwareVersion) < 0.9) {
