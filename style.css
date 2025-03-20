@@ -397,7 +397,7 @@ input:checked + .toggle-slider::before {
 
     .highlight {
     border-left-width: 10px !important;
-    border-left-color: #00ff00cc !important; /* Giallo oro brillante */
+    border-left-color: #000000cc !important; /* Giallo oro brillante */
     background-color: rgba(255, 215, 0, 0.3); /* Sfondo giallo più evidente */
     padding-left: 10px;
     font-weight: bold;
