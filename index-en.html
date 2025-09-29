@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
             faderSelect.addEventListener("change", () => updateMenus(faderSelect.value));
 
             const saveButton = document.createElement("button");
-            saveButton.textContent = "Store to Device";
+            saveButton.textContent = "Store on Device";
             saveButton.style.backgroundColor = "#ffa726";
             saveButton.style.color = "#121212";
             saveButton.style.margin = "20px 0 0 0";
@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
             additionalOptions.appendChild(saveButton);
 
             const subtitle = document.createElement("h4");
-            subtitle.textContent = "Store the current configuration to the device so that it persists after a reboot";
+            subtitle.textContent = "Store the current configuration on the device so it persists after a reboot";
             additionalOptions.appendChild(subtitle);
         }
 
